@@ -19,7 +19,7 @@ router.get('/:username', (req, res, next) => {
   })
 })
 
-router.post('/:username', (req, res, next) => {
+function AddEditUser (req, res, next) {
   let user = req.params.username
 
   let userData = {
@@ -29,7 +29,13 @@ router.post('/:username', (req, res, next) => {
     created_at: req.body.created_at,
     deleted: req.body.deleted
   }
-  let options = { strict: false, upsert: true, new: true, setDefaultsOnInsert: true }
+
+  let options
+  if (req.method === 'POST') {
+    options = { strict: false, upsert: true, new: true, setDefaultsOnInsert: true }
+  } else {
+    options = { strict: false, upsert: true, setDefaultsOnInsert: true }
+  }
 
   // Find the document
   User.findOneAndUpdate({ username: user, deleted: { $ne: true } }, userData, options, (error, result) => {
@@ -44,34 +50,11 @@ router.post('/:username', (req, res, next) => {
 
     return res.json(result)
   })
-})
+}
 
-router.put('/:username', (req, res, next) => {
-  let user = req.params.username
+router.post('/:username', AddEditUser)
 
-  let userData = {
-    name: req.body.name,
-    username: req.body.username,
-    collections: req.body.collections,
-    created_at: req.body.created_at,
-    deleted: req.body.deleted
-  }
-  let options = { strict: false, upsert: true, setDefaultsOnInsert: true }
-
-  // Find the document
-  User.findOneAndUpdate({ username: user, deleted: { $ne: true } }, userData, options, (error, result) => {
-    if (error) {
-      console.error(error)
-      return res.status(500).json(error)
-    }
-
-    if (!result) {
-      return res.status(404).json({ 'error': 404, 'not found': 'The requested user was not found' })
-    }
-
-    return res.json(result)
-  })
-})
+router.put('/:username', AddEditUser)
 
 router.delete('/:username', (req, res, next) => {
   let user = req.params.username
@@ -136,7 +119,7 @@ router.delete('/:username/:collection', (req, res, next) => {
   })
 })
 
-router.post('/:username/:collection', (req, res, next) => {
+function AddEditCollection (req, res, next) {
   let { username, collection } = req.params
   const collectionObject = {
     name: req.body.name,
@@ -168,36 +151,10 @@ router.post('/:username/:collection', (req, res, next) => {
       return res.json(result.collections.find(n => n.name === collection))
     })
   })
-})
+}
 
-router.put('/:username/:collection', (req, res, next) => {
-  let { username, collection } = req.params
-  const collectionObject = {
-    name: req.body.name,
-    documents: req.body.documents,
-    created_at: req.body.created_at,
-    deleted: req.body.deleted
-  }
+router.post('/:username/:collection', AddEditCollection)
 
-  User.findOne({ username: username, deleted: { $ne: true } }, (error, result) => {
-    if (error) {
-      console.error(error)
-      return res.status(500).json(error)
-    }
-    let col = result.collections.find(n => n.name === collection)
-
-    if (col) {
-      col.documents = Object.assign(col.documents, collectionObject.documents)
-    } else {
-      result.collections.push(collectionObject)
-    }
-    result.save((error) => {
-      if (error) return res.status(500).json(error)
-
-      // saved!
-      return res.json(result.collections.find(n => n.name === collection))
-    })
-  })
-})
+router.put('/:username/:collection', AddEditCollection)
 
 module.exports = router
