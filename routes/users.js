@@ -2,22 +2,39 @@ let express = require('express')
 let router = express.Router()
 let User = require('../models/users.model.js')
 
-/* GET users listing. */
-router.get('/:username', (req, res, next) => {
-  let user = req.params.username
-  User.findOne({ username: user, deleted: { $ne: true } }, (error, result) => {
+function AddEditCollection (req, res, next) {
+  let { username, collection } = req.params
+  const collectionObject = {
+    name: req.body.name,
+    documents: req.body.documents,
+    created_at: req.body.created_at
+  }
+
+  User.findOne({ username: username, deleted: { $ne: true } }, (error, result) => {
     if (error) {
       console.error(error)
       return res.status(500).json(error)
     }
-
     if (!result) {
       return res.status(404).json({ 'error': 404, 'not found': 'The requested user was not found' })
     }
 
-    return res.json(result)
+    let col = result.collections.find(n => n.name === collection)
+
+    if (col) {
+      col.deleted = false
+      col.documents = Object.assign(col.documents, collectionObject.documents)
+    } else {
+      result.collections.push(collectionObject)
+    }
+    result.save((error) => {
+      if (error) return res.status(500).json(error)
+
+      // saved!
+      return res.json(result.collections.find(n => n.name === collection))
+    })
   })
-})
+}
 
 function AddEditUser (req, res, next) {
   let user = req.params.username
@@ -52,14 +69,12 @@ function AddEditUser (req, res, next) {
   })
 }
 
-router.post('/:username', AddEditUser)
-
-router.put('/:username', AddEditUser)
-
-router.delete('/:username', (req, res, next) => {
+function GetDeleteUser(req, res, next) {
   let user = req.params.username
+  let searchOptions = { username: user }
+  if (req.method === 'GET') Object.assign(searchOptions, { deleted: { $ne: true } })
 
-  User.findOne({ username: user }, (error, result) => {
+  User.findOne(searchOptions, (error, result) => {
     if (error) {
       console.error(error)
       return res.status(500).json(error)
@@ -69,19 +84,25 @@ router.delete('/:username', (req, res, next) => {
       return res.status(404).json({ 'error': 404, 'not found': 'The requested user was not found' })
     }
 
-    result.deleted = true
-    result.save(error => {
-      if (error) return res.status(500).json(error)
+    if(req.method === 'DELETE') {
+      result.deleted = true
+      result.save(error => {
+        if (error) return res.status(500).json(error)
 
-      // saved!
+        // saved!
+        return res.json(result)
+      })
+    } else {
       return res.json(result)
-    })
+    }
   })
-})
+}
 
-router.get('/:username/:collection', (req, res, next) => {
+function GetDeleteCollection(req, res, next) {
   let { username, collection } = req.params
-  User.findOne({ username: username, 'collections.name': collection, deleted: { $ne: true } }, (error, result) => {
+  let searchOptions = { username: username, 'collections.name': collection }
+  if (req.method === 'GET') Object.assign(searchOptions, { deleted: { $ne: true } })
+  User.findOne(searchOptions, (error, result) => {
     if (error) {
       console.error(error)
       return res.status(500).json(error)
@@ -94,64 +115,31 @@ router.get('/:username/:collection', (req, res, next) => {
     let docs = result.collections.find(n => n.name === collection)
     if (docs.deleted) return res.status(404).json({ 'error': 404, 'not found': 'The requested collection was deleted' })
 
-    return res.json(docs.documents)
-  })
-})
+    if(req.method === 'DELETE') {
+      docs.deleted = true
+      result.save(error => {
+        if (error) return res.status(500).json(error)
 
-router.delete('/:username/:collection', (req, res, next) => {
-  let { username, collection } = req.params
-  User.findOne({ username: username, deleted: { $ne: true } }, (error, result) => {
-    if (error) {
-      console.error(error)
-      return res.status(500).json(error)
-    }
-
-    if (!result) {
-      return res.status(404).json({ 'error': 404, 'not found': 'The requested user was not found' })
-    }
-
-    result.collections.find(n => n.name === collection).deleted = true
-    result.save(error => {
-      if (error) return res.status(500).json(error)
-
-      return res.json(result.collections.find(n => n.name === collection))
-    })
-  })
-})
-
-function AddEditCollection (req, res, next) {
-  let { username, collection } = req.params
-  const collectionObject = {
-    name: req.body.name,
-    documents: req.body.documents,
-    created_at: req.body.created_at
-  }
-
-  User.findOne({ username: username, deleted: { $ne: true } }, (error, result) => {
-    if (error) {
-      console.error(error)
-      return res.status(500).json(error)
-    }
-    if (!result) {
-      return res.status(404).json({ 'error': 404, 'not found': 'The requested user was not found' })
-    }
-
-    let col = result.collections.find(n => n.name === collection)
-
-    if (col) {
-      col.deleted = false
-      col.documents = Object.assign(col.documents, collectionObject.documents)
+        return res.json(docs)
+      })
     } else {
-      result.collections.push(collectionObject)
+      return res.json(docs.documents)
     }
-    result.save((error) => {
-      if (error) return res.status(500).json(error)
-
-      // saved!
-      return res.json(result.collections.find(n => n.name === collection))
-    })
   })
 }
+
+/* GET users listing. */
+router.get('/:username', GetDeleteUser)
+
+router.post('/:username', AddEditUser)
+
+router.put('/:username', AddEditUser)
+
+router.delete('/:username', GetDeleteUser)
+
+router.get('/:username/:collection', GetDeleteCollection)
+
+router.delete('/:username/:collection', GetDeleteCollection)
 
 router.post('/:username/:collection', AddEditCollection)
 
