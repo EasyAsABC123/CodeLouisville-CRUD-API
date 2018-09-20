@@ -2,21 +2,16 @@ let createError = require('http-errors')
 let express = require('express')
 let cookieParser = require('cookie-parser')
 let logger = require('morgan')
+let secure = require('express-force-https')
+let mongoose = require('mongoose')
 
 let usersRouter = require('./routes/users')
-
-let mongoose = require('mongoose')
 let config = require('./config')
+
 mongoose.connect(`mongodb://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.dbName}`, { useNewUrlParser: true })
 
 let app = express()
-
-app.set('forceSSLOptions', {
-  enable301Redirects: true,
-  trustXFPHeader: false,
-  httpsPort: 443,
-  sslRequiredMessage: 'SSL Required.'
-});
+app.use(secure)
 
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
