@@ -69,7 +69,7 @@ function AddEditUser (req, res, next) {
   })
 }
 
-function GetDeleteUser(req, res, next) {
+function GetDeleteUser (req, res, next) {
   let user = req.params.username
   let searchOptions = { username: user }
   if (req.method === 'GET') Object.assign(searchOptions, { deleted: { $ne: true } })
@@ -84,7 +84,7 @@ function GetDeleteUser(req, res, next) {
       return res.status(404).json({ 'error': 404, 'not found': 'The requested user was not found' })
     }
 
-    if(req.method === 'DELETE') {
+    if (req.method === 'DELETE') {
       result.deleted = true
       result.save(error => {
         if (error) return res.status(500).json(error)

@@ -1,0 +1,591 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "Code Louisville CRUD API",
+    "description": "A CRUD API specifically designed for Code Louisville that will allow students to create custom collections and store any amount of data they want"
+  },
+  "host": "crudapi.codelouisville.org",
+  "basePath": "/users",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/fakeuser": {
+      "get": {
+        "description": "Gets a user and collections",
+        "summary": "get user",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "FakeuserGet",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "description": "Updates a user and collections",
+        "summary": "update user",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "FakeuserPut",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UpdateUserrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a user with collections",
+        "summary": "create user",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "FakeuserPost",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CreateUserrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "description": "Deletes a user by username",
+        "summary": "delete user",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "FakeuserDelete",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/fakeuser/shirts": {
+      "get": {
+        "description": "Creates a collection for a specific user",
+        "summary": "create collection",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "FakeuserShirtsGet",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "description": "Creates a collection for a specific user",
+        "summary": "delete collection",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "FakeuserShirtsPut",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/DeleteCollectionrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a collection for a specific user",
+        "summary": "update collection",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "FakeuserShirtsPost",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UpdateCollectionrequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "description": "Deletes a collection for a specific user",
+        "summary": "delete collection",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "FakeuserShirtsDelete",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "CreateUserrequest": {
+      "title": "create userRequest",
+      "example": {
+        "name": "Fake User",
+        "username": "fakeuser",
+        "collections": [
+          {
+            "name": "shirts",
+            "documents": [
+              {
+                "name": "iron man",
+                "price": 20.5,
+                "description": "awesome shirt with iron man on it",
+                "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+              },
+              {
+                "name": "cat",
+                "price": 19.5,
+                "description": "right meow this shirt is hot",
+                "image": "https://res.cloudinary.com/teepublic/image/private/s--DYMp0_fm--/t_Preview/b_rgb:262c3a,c_limit,f_jpg,h_630,q_90,w_630/v1453089772/production/designs/397266_1.jpg"
+              }
+            ]
+          },
+          {
+            "name": "pants",
+            "documents": [
+              {
+                "name": "dress pants",
+                "price": 120.5,
+                "description": "awesome pants for cool stuff",
+                "image": "https://images.express.com/is/image/expressfashion/35_383_2882_098_01?cache=on&wid=960&fmt=jpeg&qlt=85,1&resmode=sharp2&op_usm=1,1,5,0&defaultImage=Photo-Coming-Soon"
+              },
+              {
+                "name": "jeans",
+                "price": 49.99,
+                "description": "don't be blue",
+                "image": "https://cdn.shopify.com/s/files/1/0293/9277/products/Fashion_Nova_07-07_13_1000x.JPG?v=1534970983"
+              }
+            ]
+          }
+        ]
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "",
+          "example": "Fake User",
+          "type": "string"
+        },
+        "username": {
+          "description": "",
+          "example": "fakeuser",
+          "type": "string"
+        },
+        "collections": {
+          "description": "",
+          "example": [
+            {
+              "name": "shirts",
+              "documents": [
+                {
+                  "name": "iron man",
+                  "price": 20.5,
+                  "description": "awesome shirt with iron man on it",
+                  "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+                },
+                {
+                  "name": "cat",
+                  "price": 19.5,
+                  "description": "right meow this shirt is hot",
+                  "image": "https://res.cloudinary.com/teepublic/image/private/s--DYMp0_fm--/t_Preview/b_rgb:262c3a,c_limit,f_jpg,h_630,q_90,w_630/v1453089772/production/designs/397266_1.jpg"
+                }
+              ]
+            },
+            {
+              "name": "pants",
+              "documents": [
+                {
+                  "name": "dress pants",
+                  "price": 120.5,
+                  "description": "awesome pants for cool stuff",
+                  "image": "https://images.express.com/is/image/expressfashion/35_383_2882_098_01?cache=on&wid=960&fmt=jpeg&qlt=85,1&resmode=sharp2&op_usm=1,1,5,0&defaultImage=Photo-Coming-Soon"
+                },
+                {
+                  "name": "jeans",
+                  "price": 49.99,
+                  "description": "don't be blue",
+                  "image": "https://cdn.shopify.com/s/files/1/0293/9277/products/Fashion_Nova_07-07_13_1000x.JPG?v=1534970983"
+                }
+              ]
+            }
+          ],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Collection"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "username",
+        "collections"
+      ]
+    },
+    "Collection": {
+      "title": "Collection",
+      "example": {
+        "name": "shirts",
+        "documents": [
+          {
+            "name": "iron man",
+            "price": 20.5,
+            "description": "awesome shirt with iron man on it",
+            "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+          },
+          {
+            "name": "cat",
+            "price": 19.5,
+            "description": "right meow this shirt is hot",
+            "image": "https://res.cloudinary.com/teepublic/image/private/s--DYMp0_fm--/t_Preview/b_rgb:262c3a,c_limit,f_jpg,h_630,q_90,w_630/v1453089772/production/designs/397266_1.jpg"
+          }
+        ]
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "",
+          "example": "shirts",
+          "type": "string"
+        },
+        "documents": {
+          "description": "",
+          "example": [
+            {
+              "name": "iron man",
+              "price": 20.5,
+              "description": "awesome shirt with iron man on it",
+              "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+            },
+            {
+              "name": "cat",
+              "price": 19.5,
+              "description": "right meow this shirt is hot",
+              "image": "https://res.cloudinary.com/teepublic/image/private/s--DYMp0_fm--/t_Preview/b_rgb:262c3a,c_limit,f_jpg,h_630,q_90,w_630/v1453089772/production/designs/397266_1.jpg"
+            }
+          ],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Document"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "documents"
+      ]
+    },
+    "Document": {
+      "title": "Document",
+      "example": {
+        "name": "iron man",
+        "price": 20.5,
+        "description": "awesome shirt with iron man on it",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "",
+          "example": "iron man",
+          "type": "string"
+        },
+        "price": {
+          "description": "",
+          "example": 20.5,
+          "type": "number",
+          "format": "double"
+        },
+        "description": {
+          "description": "",
+          "example": "awesome shirt with iron man on it",
+          "type": "string"
+        },
+        "image": {
+          "description": "",
+          "example": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "price",
+        "description",
+        "image"
+      ]
+    },
+    "UpdateUserrequest": {
+      "title": "update userRequest",
+      "example": {
+        "name": "Fake User",
+        "username": "fakeuser",
+        "collections": []
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "",
+          "example": "Fake User",
+          "type": "string"
+        },
+        "username": {
+          "description": "",
+          "example": "fakeuser",
+          "type": "string"
+        },
+        "collections": {
+          "description": "",
+          "example": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "username",
+        "collections"
+      ]
+    },
+    "UpdateCollectionrequest": {
+      "title": "update collectionRequest",
+      "example": {
+        "name": "shirts",
+        "documents": [
+          {
+            "name": "iron man",
+            "price": 20.5,
+            "description": "awesome shirt with iron man on it",
+            "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+          },
+          {
+            "name": "cat",
+            "price": 19.5,
+            "description": "right meow this shirt is hot",
+            "image": "https://res.cloudinary.com/teepublic/image/private/s--DYMp0_fm--/t_Preview/b_rgb:262c3a,c_limit,f_jpg,h_630,q_90,w_630/v1453089772/production/designs/397266_1.jpg"
+          }
+        ]
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "",
+          "example": "shirts",
+          "type": "string"
+        },
+        "documents": {
+          "description": "",
+          "example": [
+            {
+              "name": "iron man",
+              "price": 20.5,
+              "description": "awesome shirt with iron man on it",
+              "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+            },
+            {
+              "name": "cat",
+              "price": 19.5,
+              "description": "right meow this shirt is hot",
+              "image": "https://res.cloudinary.com/teepublic/image/private/s--DYMp0_fm--/t_Preview/b_rgb:262c3a,c_limit,f_jpg,h_630,q_90,w_630/v1453089772/production/designs/397266_1.jpg"
+            }
+          ],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Document"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "documents"
+      ]
+    },
+    "DeleteCollectionrequest": {
+      "title": "delete collectionRequest",
+      "example": {
+        "name": "shirts",
+        "documents": [
+          {
+            "name": "iron man 2",
+            "price": 25.5,
+            "description": "awesome shirt with iron man on it",
+            "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+          },
+          {
+            "name": "cat",
+            "price": 30.99,
+            "description": "right meow this shirt is hot",
+            "image": "https://res.cloudinary.com/teepublic/image/private/s--DYMp0_fm--/t_Preview/b_rgb:262c3a,c_limit,f_jpg,h_630,q_90,w_630/v1453089772/production/designs/397266_1.jpg"
+          }
+        ]
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "",
+          "example": "shirts",
+          "type": "string"
+        },
+        "documents": {
+          "description": "",
+          "example": [
+            {
+              "name": "iron man 2",
+              "price": 25.5,
+              "description": "awesome shirt with iron man on it",
+              "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+            },
+            {
+              "name": "cat",
+              "price": 30.99,
+              "description": "right meow this shirt is hot",
+              "image": "https://res.cloudinary.com/teepublic/image/private/s--DYMp0_fm--/t_Preview/b_rgb:262c3a,c_limit,f_jpg,h_630,q_90,w_630/v1453089772/production/designs/397266_1.jpg"
+            }
+          ],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Document"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "documents"
+      ]
+    }
+  }
+}

@@ -14,18 +14,20 @@ mongoose.connect(`mongodb://${config.db.username}:${config.db.password}@${config
 let app = express()
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+  res.header("Access-Control-Allow-Origin", "*")
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+  next()
+})
+
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
-let publicPath = path.resolve(__dirname, './public')
-app.use(express.static(publicPath))
 
-app.use('/', indexRouter)
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./public/swagger.json');
+
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/users', usersRouter)
 
 // catch 404 and forward to error handler
