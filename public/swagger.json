@@ -17,18 +17,26 @@
     "application/json"
   ],
   "paths": {
-    "/fakeuser": {
+    "/{username}": {
       "get": {
         "description": "Gets a user and collections",
         "summary": "get user",
         "tags": [
           "Misc"
         ],
-        "operationId": "FakeuserGet",
+        "operationId": "ByUsernameGet",
         "produces": [
           "application/json"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
         "responses": {
           "200": {
             "description": ""
@@ -41,7 +49,7 @@
         "tags": [
           "Misc"
         ],
-        "operationId": "FakeuserPut",
+        "operationId": "ByUsernamePut",
         "produces": [
           "application/json"
         ],
@@ -54,6 +62,13 @@
             "schema": {
               "$ref": "#/definitions/UpdateUserrequest"
             }
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
           }
         ],
         "responses": {
@@ -68,7 +83,7 @@
         "tags": [
           "Misc"
         ],
-        "operationId": "FakeuserPost",
+        "operationId": "ByUsernamePost",
         "produces": [
           "application/json"
         ],
@@ -81,6 +96,13 @@
             "schema": {
               "$ref": "#/definitions/CreateUserrequest"
             }
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
           }
         ],
         "responses": {
@@ -95,11 +117,19 @@
         "tags": [
           "Misc"
         ],
-        "operationId": "FakeuserDelete",
+        "operationId": "ByUsernameDelete",
         "produces": [
           "application/json"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
         "responses": {
           "200": {
             "description": ""
@@ -107,18 +137,33 @@
         }
       }
     },
-    "/fakeuser/shirts": {
+    "/{username}/{collection}": {
       "get": {
         "description": "Creates a collection for a specific user",
-        "summary": "create collection",
+        "summary": "get collection",
         "tags": [
           "Misc"
         ],
-        "operationId": "FakeuserShirtsGet",
+        "operationId": "ByUsernameAndCollectionGet",
         "produces": [
           "application/json"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "collection",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
         "responses": {
           "200": {
             "description": ""
@@ -127,45 +172,11 @@
       },
       "put": {
         "description": "Creates a collection for a specific user",
-        "summary": "delete collection",
-        "tags": [
-          "Misc"
-        ],
-        "operationId": "FakeuserShirtsPut",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "Content-Type",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": ""
-          },
-          {
-            "name": "Body",
-            "in": "body",
-            "required": true,
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/DeleteCollectionrequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a collection for a specific user",
         "summary": "update collection",
         "tags": [
           "Misc"
         ],
-        "operationId": "FakeuserShirtsPost",
+        "operationId": "ByUsernameAndCollectionPut",
         "produces": [
           "application/json"
         ],
@@ -185,6 +196,68 @@
             "schema": {
               "$ref": "#/definitions/UpdateCollectionrequest"
             }
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "collection",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "description": "Creates a collection for a specific user",
+        "summary": "create collection",
+        "tags": [
+          "Misc"
+        ],
+        "operationId": "ByUsernameAndCollectionPost",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/CreateCollectionrequest"
+            }
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "collection",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
           }
         ],
         "responses": {
@@ -199,11 +272,26 @@
         "tags": [
           "Misc"
         ],
-        "operationId": "FakeuserShirtsDelete",
+        "operationId": "ByUsernameAndCollectionDelete",
         "produces": [
           "application/json"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "collection",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
         "responses": {
           "200": {
             "description": ""
@@ -443,8 +531,8 @@
         "collections"
       ]
     },
-    "UpdateCollectionrequest": {
-      "title": "update collectionRequest",
+    "CreateCollectionrequest": {
+      "title": "create collectionRequest",
       "example": {
         "name": "shirts",
         "documents": [
@@ -496,8 +584,8 @@
         "documents"
       ]
     },
-    "DeleteCollectionrequest": {
-      "title": "delete collectionRequest",
+    "UpdateCollectionrequest": {
+      "title": "update collectionRequest",
       "example": {
         "name": "shirts",
         "documents": [
