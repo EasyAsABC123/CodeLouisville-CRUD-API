@@ -5,10 +5,10 @@
     "title": "Code Louisville CRUD API",
     "description": "A CRUD API specifically designed for Code Louisville that will allow students to create custom collections and store any amount of data they want"
   },
-  "host": "localhost:3030",
+  "host": "crudapi.codelouisville.org",
   "basePath": "/users",
   "schemes": [
-    "http"
+    "https"
   ],
   "consumes": [
     "application/json"
@@ -90,6 +90,18 @@
                 "created_at": null,
                 "deleted": null,
                 "name": "Fake User"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/GetUser3"
+            },
+            "examples": {
+              "application/json": {
+                "error": 404,
+                "not found": "The requested user was not found"
               }
             }
           }
@@ -182,6 +194,18 @@
                 "created_at": null,
                 "deleted": null,
                 "name": "Fake User"
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/UpdateUser14"
+            },
+            "examples": {
+              "application/json": {
+                "error": 404,
+                "not found": "The requested user was not found"
               }
             }
           }
@@ -300,12 +324,63 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/DeleteUser"
+            },
+            "examples": {
+              "application/json": {
+                "_id": "5ba3e80f3a69c200151ee67e",
+                "username": "fakeuser",
+                "__v": 0,
+                "collections": [
+                  {
+                    "documents": [
+                      {
+                        "name": "iron man",
+                        "price": 20.5,
+                        "description": "awesome shirt with iron man on it",
+                        "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+                      },
+                      {
+                        "name": "cat",
+                        "price": 19.5,
+                        "description": "right meow this shirt is hot",
+                        "image": "https://res.cloudinary.com/teepublic/image/private/s--DYMp0_fm--/t_Preview/b_rgb:262c3a,c_limit,f_jpg,h_630,q_90,w_630/v1453089772/production/designs/397266_1.jpg"
+                      }
+                    ],
+                    "_id": "5ba3e80f3a69c200151ee67d",
+                    "name": "shirts"
+                  },
+                  {
+                    "documents": [
+                      {
+                        "name": "dress pants",
+                        "price": 120.5,
+                        "description": "awesome pants for cool stuff",
+                        "image": "https://images.express.com/is/image/expressfashion/35_383_2882_098_01?cache=on&wid=960&fmt=jpeg&qlt=85,1&resmode=sharp2&op_usm=1,1,5,0&defaultImage=Photo-Coming-Soon"
+                      },
+                      {
+                        "name": "jeans",
+                        "price": 49.99,
+                        "description": "don't be blue",
+                        "image": "https://cdn.shopify.com/s/files/1/0293/9277/products/Fashion_Nova_07-07_13_1000x.JPG?v=1534970983"
+                      }
+                    ],
+                    "_id": "5ba3e80f3a69c200151ee67c",
+                    "name": "pants"
+                  }
+                ],
+                "created_at": null,
+                "deleted": true,
+                "name": "Fake User"
+              }
+            }
           },
           "404": {
             "description": "Not Found",
             "schema": {
-              "$ref": "#/definitions/DeleteUser"
+              "$ref": "#/definitions/DeleteUser18"
             },
             "examples": {
               "application/json": {
@@ -356,7 +431,7 @@
             "examples": {
               "application/json": {
                 "error": 404,
-                "not found": "The requested collection was deleted"
+                "not found": "The requested collection was not found or the username was not found"
               }
             }
           }
@@ -429,6 +504,18 @@
                 "_id": "5ba3b380d6c1f30015221621",
                 "name": "shirts",
                 "deleted": false
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/UpdateCollection29"
+            },
+            "examples": {
+              "application/json": {
+                "error": 404,
+                "not found": "The requested user was not found"
               }
             }
           }
@@ -807,6 +894,31 @@
         "image"
       ]
     },
+    "GetUser3": {
+      "title": "get user3",
+      "example": {
+        "error": 404,
+        "not found": "The requested user was not found"
+      },
+      "type": "object",
+      "properties": {
+        "error": {
+          "description": "",
+          "example": 404,
+          "type": "integer",
+          "format": "int32"
+        },
+        "not found": {
+          "description": "",
+          "example": "The requested user was not found",
+          "type": "string"
+        }
+      },
+      "required": [
+        "error",
+        "not found"
+      ]
+    },
     "CreateUserrequest": {
       "title": "create userRequest",
       "example": {
@@ -901,7 +1013,7 @@
           ],
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Collection4"
+            "$ref": "#/definitions/Collection5"
           }
         }
       },
@@ -911,8 +1023,8 @@
         "collections"
       ]
     },
-    "Collection4": {
-      "title": "Collection4",
+    "Collection5": {
+      "title": "Collection5",
       "example": {
         "name": "shirts",
         "documents": [
@@ -1072,7 +1184,7 @@
           ],
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Collection7"
+            "$ref": "#/definitions/Collection8"
           }
         },
         "created_at": {
@@ -1099,8 +1211,8 @@
         "name"
       ]
     },
-    "Collection7": {
-      "title": "Collection7",
+    "Collection8": {
+      "title": "Collection8",
       "example": {
         "documents": [
           {
@@ -1301,7 +1413,7 @@
           ],
           "type": "array",
           "items": {
-            "$ref": "#/definitions/Collection7"
+            "$ref": "#/definitions/Collection8"
           }
         },
         "created_at": {
@@ -1328,8 +1440,169 @@
         "name"
       ]
     },
+    "UpdateUser14": {
+      "title": "update user14",
+      "example": {
+        "error": 404,
+        "not found": "The requested user was not found"
+      },
+      "type": "object",
+      "properties": {
+        "error": {
+          "description": "",
+          "example": 404,
+          "type": "integer",
+          "format": "int32"
+        },
+        "not found": {
+          "description": "",
+          "example": "The requested user was not found",
+          "type": "string"
+        }
+      },
+      "required": [
+        "error",
+        "not found"
+      ]
+    },
     "DeleteUser": {
       "title": "delete user",
+      "example": {
+        "_id": "5ba3e80f3a69c200151ee67e",
+        "username": "fakeuser",
+        "__v": 0,
+        "collections": [
+          {
+            "documents": [
+              {
+                "name": "iron man",
+                "price": 20.5,
+                "description": "awesome shirt with iron man on it",
+                "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+              },
+              {
+                "name": "cat",
+                "price": 19.5,
+                "description": "right meow this shirt is hot",
+                "image": "https://res.cloudinary.com/teepublic/image/private/s--DYMp0_fm--/t_Preview/b_rgb:262c3a,c_limit,f_jpg,h_630,q_90,w_630/v1453089772/production/designs/397266_1.jpg"
+              }
+            ],
+            "_id": "5ba3e80f3a69c200151ee67d",
+            "name": "shirts"
+          },
+          {
+            "documents": [
+              {
+                "name": "dress pants",
+                "price": 120.5,
+                "description": "awesome pants for cool stuff",
+                "image": "https://images.express.com/is/image/expressfashion/35_383_2882_098_01?cache=on&wid=960&fmt=jpeg&qlt=85,1&resmode=sharp2&op_usm=1,1,5,0&defaultImage=Photo-Coming-Soon"
+              },
+              {
+                "name": "jeans",
+                "price": 49.99,
+                "description": "don't be blue",
+                "image": "https://cdn.shopify.com/s/files/1/0293/9277/products/Fashion_Nova_07-07_13_1000x.JPG?v=1534970983"
+              }
+            ],
+            "_id": "5ba3e80f3a69c200151ee67c",
+            "name": "pants"
+          }
+        ],
+        "created_at": null,
+        "deleted": true,
+        "name": "Fake User"
+      },
+      "type": "object",
+      "properties": {
+        "_id": {
+          "description": "",
+          "example": "5ba3e80f3a69c200151ee67e",
+          "type": "string"
+        },
+        "username": {
+          "description": "",
+          "example": "fakeuser",
+          "type": "string"
+        },
+        "__v": {
+          "description": "",
+          "example": 0,
+          "type": "integer",
+          "format": "int32"
+        },
+        "collections": {
+          "description": "",
+          "example": [
+            {
+              "documents": [
+                {
+                  "name": "iron man",
+                  "price": 20.5,
+                  "description": "awesome shirt with iron man on it",
+                  "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+                },
+                {
+                  "name": "cat",
+                  "price": 19.5,
+                  "description": "right meow this shirt is hot",
+                  "image": "https://res.cloudinary.com/teepublic/image/private/s--DYMp0_fm--/t_Preview/b_rgb:262c3a,c_limit,f_jpg,h_630,q_90,w_630/v1453089772/production/designs/397266_1.jpg"
+                }
+              ],
+              "_id": "5ba3e80f3a69c200151ee67d",
+              "name": "shirts"
+            },
+            {
+              "documents": [
+                {
+                  "name": "dress pants",
+                  "price": 120.5,
+                  "description": "awesome pants for cool stuff",
+                  "image": "https://images.express.com/is/image/expressfashion/35_383_2882_098_01?cache=on&wid=960&fmt=jpeg&qlt=85,1&resmode=sharp2&op_usm=1,1,5,0&defaultImage=Photo-Coming-Soon"
+                },
+                {
+                  "name": "jeans",
+                  "price": 49.99,
+                  "description": "don't be blue",
+                  "image": "https://cdn.shopify.com/s/files/1/0293/9277/products/Fashion_Nova_07-07_13_1000x.JPG?v=1534970983"
+                }
+              ],
+              "_id": "5ba3e80f3a69c200151ee67c",
+              "name": "pants"
+            }
+          ],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Collection8"
+          }
+        },
+        "created_at": {
+          "description": "",
+          "type": "string"
+        },
+        "deleted": {
+          "description": "",
+          "example": true,
+          "type": "boolean"
+        },
+        "name": {
+          "description": "",
+          "example": "Fake User",
+          "type": "string"
+        }
+      },
+      "required": [
+        "_id",
+        "username",
+        "__v",
+        "collections",
+        "created_at",
+        "deleted",
+        "name"
+      ]
+    },
+    "DeleteUser18": {
+      "title": "delete user18",
       "example": {
         "error": 404,
         "not found": "The requested user was not found"
@@ -1357,7 +1630,7 @@
       "title": "get collection",
       "example": {
         "error": 404,
-        "not found": "The requested collection was deleted"
+        "not found": "The requested collection was not found or the username was not found"
       },
       "type": "object",
       "properties": {
@@ -1369,7 +1642,7 @@
         },
         "not found": {
           "description": "",
-          "example": "The requested collection was deleted",
+          "example": "The requested collection was not found or the username was not found",
           "type": "string"
         }
       },
@@ -1616,6 +1889,31 @@
         "_id",
         "name",
         "deleted"
+      ]
+    },
+    "UpdateCollection29": {
+      "title": "update collection29",
+      "example": {
+        "error": 404,
+        "not found": "The requested user was not found"
+      },
+      "type": "object",
+      "properties": {
+        "error": {
+          "description": "",
+          "example": 404,
+          "type": "integer",
+          "format": "int32"
+        },
+        "not found": {
+          "description": "",
+          "example": "The requested user was not found",
+          "type": "string"
+        }
+      },
+      "required": [
+        "error",
+        "not found"
       ]
     },
     "DeleteCollection": {
