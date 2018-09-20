@@ -41,7 +41,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/GetUser"
+              "$ref": "#/definitions/200SuccessGetUser"
             },
             "examples": {
               "application/json": {
@@ -96,7 +96,7 @@
           "404": {
             "description": "Not Found",
             "schema": {
-              "$ref": "#/definitions/GetUser3"
+              "$ref": "#/definitions/404NotFoundGetUser"
             },
             "examples": {
               "application/json": {
@@ -146,7 +146,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/UpdateUser"
+              "$ref": "#/definitions/200OkUpdateUser"
             },
             "examples": {
               "application/json": {
@@ -200,7 +200,7 @@
           "404": {
             "description": "Not Found",
             "schema": {
-              "$ref": "#/definitions/UpdateUser14"
+              "$ref": "#/definitions/404NotFoundUpdateUser"
             },
             "examples": {
               "application/json": {
@@ -250,7 +250,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/CreateUser"
+              "$ref": "#/definitions/200OkCreateUser"
             },
             "examples": {
               "application/json": {
@@ -326,7 +326,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/DeleteUser"
+              "$ref": "#/definitions/200OkDeleteUser"
             },
             "examples": {
               "application/json": {
@@ -380,7 +380,7 @@
           "404": {
             "description": "Not Found",
             "schema": {
-              "$ref": "#/definitions/DeleteUser18"
+              "$ref": "#/definitions/404NotFoundDeleteUser"
             },
             "examples": {
               "application/json": {
@@ -421,12 +421,34 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/200GetCollection"
+              }
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "name": "iron man",
+                  "price": 20.5,
+                  "description": "awesome shirt with iron man on it",
+                  "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+                },
+                {
+                  "name": "cat",
+                  "price": 19.5,
+                  "description": "right meow this shirt is hot",
+                  "image": "https://res.cloudinary.com/teepublic/image/private/s--DYMp0_fm--/t_Preview/b_rgb:262c3a,c_limit,f_jpg,h_630,q_90,w_630/v1453089772/production/designs/397266_1.jpg"
+                }
+              ]
+            }
           },
           "404": {
             "description": "Not Found",
             "schema": {
-              "$ref": "#/definitions/GetCollection"
+              "$ref": "#/definitions/404NotFoundGetCollection"
             },
             "examples": {
               "application/json": {
@@ -483,7 +505,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/UpdateCollection"
+              "$ref": "#/definitions/200OkUpdateCollection"
             },
             "examples": {
               "application/json": {
@@ -510,7 +532,7 @@
           "404": {
             "description": "Not Found",
             "schema": {
-              "$ref": "#/definitions/UpdateCollection29"
+              "$ref": "#/definitions/404NotFoundUpdateCollection"
             },
             "examples": {
               "application/json": {
@@ -567,7 +589,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/CreateCollection"
+              "$ref": "#/definitions/200OkCreateCollection"
             },
             "examples": {
               "application/json": {
@@ -623,7 +645,7 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/DeleteCollection"
+              "$ref": "#/definitions/200OkDeleteCollection"
             },
             "examples": {
               "application/json": {
@@ -652,8 +674,8 @@
     }
   },
   "definitions": {
-    "GetUser": {
-      "title": "get user",
+    "200SuccessGetUser": {
+      "title": "200 success get user",
       "example": {
         "_id": "5ba3b380d6c1f30015221622",
         "username": "fakeuser",
@@ -894,8 +916,8 @@
         "image"
       ]
     },
-    "GetUser3": {
-      "title": "get user3",
+    "404NotFoundGetUser": {
+      "title": "404 not found get user",
       "example": {
         "error": 404,
         "not found": "The requested user was not found"
@@ -1076,8 +1098,8 @@
         "documents"
       ]
     },
-    "CreateUser": {
-      "title": "create user",
+    "200OkCreateUser": {
+      "title": "200 ok create user",
       "example": {
         "_id": "5ba3e7bd3a69c200151ee676",
         "username": "fakeuser",
@@ -1305,8 +1327,8 @@
         "collections"
       ]
     },
-    "UpdateUser": {
-      "title": "update user",
+    "200OkUpdateUser": {
+      "title": "200 ok update user",
       "example": {
         "_id": "5ba3e7bd3a69c200151ee676",
         "username": "fakeuser",
@@ -1440,8 +1462,8 @@
         "name"
       ]
     },
-    "UpdateUser14": {
-      "title": "update user14",
+    "404NotFoundUpdateUser": {
+      "title": "404 not found update user",
       "example": {
         "error": 404,
         "not found": "The requested user was not found"
@@ -1465,8 +1487,8 @@
         "not found"
       ]
     },
-    "DeleteUser": {
-      "title": "delete user",
+    "200OkDeleteUser": {
+      "title": "200 ok delete user",
       "example": {
         "_id": "5ba3e80f3a69c200151ee67e",
         "username": "fakeuser",
@@ -1601,8 +1623,8 @@
         "name"
       ]
     },
-    "DeleteUser18": {
-      "title": "delete user18",
+    "404NotFoundDeleteUser": {
+      "title": "404 not found delete user",
       "example": {
         "error": 404,
         "not found": "The requested user was not found"
@@ -1626,8 +1648,8 @@
         "not found"
       ]
     },
-    "GetCollection": {
-      "title": "get collection",
+    "404NotFoundGetCollection": {
+      "title": "404 not found get collection",
       "example": {
         "error": 404,
         "not found": "The requested collection was not found or the username was not found"
@@ -1643,6 +1665,66 @@
         "not found": {
           "description": "",
           "example": "The requested collection was not found or the username was not found",
+          "type": "string"
+        }
+      },
+      "required": [
+        "error",
+        "not found"
+      ]
+    },
+    "200GetCollection": {
+      "title": "200 get collection",
+      "example": {
+        "name": "iron man",
+        "price": 20.5,
+        "description": "awesome shirt with iron man on it",
+        "image": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg"
+      },
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "",
+          "example": "iron man",
+          "type": "string"
+        },
+        "price": {
+          "description": "",
+          "example": 20.5,
+          "type": "number",
+          "format": "double"
+        },
+        "description": {
+          "description": "",
+          "example": "awesome shirt with iron man on it",
+          "type": "string"
+        },
+        "image": {
+          "description": "",
+          "example": "https://images-na.ssl-images-amazon.com/images/I/71Lv55DbRyL._UX679_.jpg",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "price",
+        "description",
+        "image"
+      ]
+    },
+    "404DeletedGetCollection": {
+      "title": "404 deleted get collection",
+      "type": "object",
+      "properties": {
+        "error": {
+          "description": "",
+          "example": 404,
+          "type": "integer",
+          "format": "int32"
+        },
+        "not found": {
+          "description": "",
+          "example": "The requested collection was deleted",
           "type": "string"
         }
       },
@@ -1704,8 +1786,8 @@
         "documents"
       ]
     },
-    "CreateCollection": {
-      "title": "create collection",
+    "200OkCreateCollection": {
+      "title": "200 ok create collection",
       "example": {
         "documents": [
           {
@@ -1824,8 +1906,8 @@
         "documents"
       ]
     },
-    "UpdateCollection": {
-      "title": "update collection",
+    "200OkUpdateCollection": {
+      "title": "200 ok update collection",
       "example": {
         "documents": [
           {
@@ -1891,8 +1973,8 @@
         "deleted"
       ]
     },
-    "UpdateCollection29": {
-      "title": "update collection29",
+    "404NotFoundUpdateCollection": {
+      "title": "404 not found update collection",
       "example": {
         "error": 404,
         "not found": "The requested user was not found"
@@ -1916,8 +1998,8 @@
         "not found"
       ]
     },
-    "DeleteCollection": {
-      "title": "delete collection",
+    "200OkDeleteCollection": {
+      "title": "200 ok delete collection",
       "example": {
         "documents": [
           {
