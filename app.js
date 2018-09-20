@@ -32,7 +32,7 @@ let options = {
 app.use('/users', usersRouter)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
 app.use('/', (req, res) => {
-  res.redirect('/docs')
+  res.redirect('/api-docs')
 })
 
 // catch 404 and forward to error handler
