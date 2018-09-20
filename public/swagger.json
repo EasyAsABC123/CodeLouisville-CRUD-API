@@ -5,7 +5,7 @@
     "title": "Code Louisville CRUD API",
     "description": "A CRUD API specifically designed for Code Louisville that will allow students to create custom collections and store any amount of data they want"
   },
-  "host": "crudapi.codelouisville.org",
+  "host": "localhost:3030",
   "basePath": "/users",
   "schemes": [
     "http"
@@ -28,15 +28,7 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [
-          {
-            "name": "Content-Type",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": ""
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": ""
@@ -54,13 +46,6 @@
           "application/json"
         ],
         "parameters": [
-          {
-            "name": "Content-Type",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": ""
-          },
           {
             "name": "Body",
             "in": "body",
@@ -89,13 +74,6 @@
         ],
         "parameters": [
           {
-            "name": "Content-Type",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": ""
-          },
-          {
             "name": "Body",
             "in": "body",
             "required": true,
@@ -121,15 +99,7 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [
-          {
-            "name": "Content-Type",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": ""
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": ""
@@ -233,15 +203,7 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [
-          {
-            "name": "Content-Type",
-            "in": "header",
-            "required": true,
-            "type": "string",
-            "description": ""
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": ""
