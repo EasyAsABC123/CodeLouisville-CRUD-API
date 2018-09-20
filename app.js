@@ -11,6 +11,13 @@ mongoose.connect(`mongodb://${config.db.username}:${config.db.password}@${config
 
 let app = express()
 
+app.set('forceSSLOptions', {
+  enable301Redirects: true,
+  trustXFPHeader: false,
+  httpsPort: 443,
+  sslRequiredMessage: 'SSL Required.'
+});
+
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
