@@ -24,6 +24,7 @@ function AddEditCollection (req, res, next) {
     if (col) {
       col.deleted = false
       col.documents = Object.assign(col.documents, collectionObject.documents)
+      result.markModified('collections')
     } else {
       result.collections.push(collectionObject)
     }
