@@ -23,7 +23,15 @@ async function AddEditCollection (req, res, next) {
     return res.status(500).json({ 'error': 500, 'message': result.errors })
   }
 
-  let col = result.collections.find(n => n.name === collection)
+  if (col) {
+    col.deleted = false
+    col.documents = Object.assign(col.documents, collectionObject.documents)
+    result.markModified('collections')
+  } else {
+    result.collections.push(collectionObject)
+  }
+  result.save((error) => {
+    if (error) return res.status(500).json(error)
 
   if (col) {
     col.deleted = false
