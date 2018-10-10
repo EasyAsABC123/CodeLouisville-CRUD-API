@@ -2,41 +2,43 @@ let express = require('express')
 let router = express.Router()
 let User = require('../models/users.model.js')
 
-function AddEditCollection (req, res, next) {
+async function AddEditCollection (req, res, next) {
   let { username, collection } = req.params
   const collectionObject = {
     name: req.body.name,
     documents: req.body.documents,
     created_at: req.body.created_at
   }
+  let searchOptions = { username: username, deleted: { $ne: true } }
+  if (req.method === 'PUT') {
+    searchOptions = Object.assign(searchOptions, { 'collections.name': collection })
+  }
 
-  User.findOne({ username: username, deleted: { $ne: true } }, (error, result) => {
-    if (error) {
-      console.error(error)
-      return res.status(500).json(error)
-    }
-    if (!result) {
-      return res.status(404).json({ 'error': 404, 'not found': 'The requested user was not found' })
-    }
+  let result = await User.findOne(searchOptions)
+  if (!result) {
+    return res.status(404).json({ 'error': 404, 'message': 'The requested user was not found' })
+  }
+  if (result.errors) {
+    console.error(result.errors)
+    return res.status(500).json({ 'error': 500, 'message': result.errors })
+  }
 
-    let col = result.collections.find(n => n.name === collection)
+  let col = result.collections.find(n => n.name === collection)
 
-    if (col) {
-      col.deleted = false
-      col.documents = Object.assign(col.documents, collectionObject.documents)
-    } else {
-      result.collections.push(collectionObject)
-    }
-    result.save((error) => {
-      if (error) return res.status(500).json(error)
-
-      // saved!
-      return res.json(result.collections.find(n => n.name === collection))
-    })
+  if (col) {
+    col.deleted = false
+    col.documents = Object.assign(col.documents, collectionObject.documents)
+  } else {
+    result.collections.push(collectionObject)
+  }
+  result.markModified('collections')
+  result.save((error, r) => {
+    if (error) return res.status(409).json(error.message)
+    return res.json(r.collections.find(n => n.name === collection))
   })
 }
 
-function AddEditUser (req, res, next) {
+async function AddEditUser (req, res, next) {
   let user = req.params.username
 
   let userData = {
@@ -47,102 +49,126 @@ function AddEditUser (req, res, next) {
     deleted: req.body.deleted
   }
 
-  let options
+  if (!userData.name || !userData.username) {
+    return res.status(400).json({ 'error': 400, 'message': 'name and username required' })
+  }
+
+  let options = { runValidators: true, context: 'query', strict: false, upsert: true, setDefaultsOnInsert: true }
   if (req.method === 'POST') {
-    options = { strict: false, upsert: true, new: true, setDefaultsOnInsert: true }
-  } else {
-    options = { strict: false, upsert: true, setDefaultsOnInsert: true }
+    options = Object.assign(options, { new: true })
   }
 
   // Find the document
-  User.findOneAndUpdate({ username: user, deleted: { $ne: true } }, userData, options, (error, result) => {
+  User.findOneAndUpdate({ username: user, deleted: { $ne: true } }, userData, options, (error, results) => {
     if (error) {
-      console.error(error)
-      return res.status(500).json(error)
+      if (error.name === 'ValidationError') {
+        return res.status(409).json({ 'error': 409, 'message': error.message })
+      } else {
+        return res.status(500).json({ 'error': 500, 'message': error })
+      }
+    }
+    if (!results) {
+      return res.status(404).json({ 'error': 404, 'message': 'The requested user was not found' })
     }
 
-    if (!result) {
-      return res.status(404).json({ 'error': 404, 'not found': 'The requested user was not found' })
+    if (results.errors) {
+      console.error(results.errors)
+      return res.status(500).json({ 'error': 500, 'message': results.errors })
     }
 
-    return res.json(result)
+    return res.json(results)
   })
 }
 
-function GetDeleteUser (req, res, next) {
+async function GetDeleteUser (req, res, next) {
   let user = req.params.username
   let searchOptions = { username: user }
   if (req.method === 'GET') Object.assign(searchOptions, { deleted: { $ne: true } })
 
-  User.findOne(searchOptions, (error, result) => {
-    if (error) {
-      console.error(error)
-      return res.status(500).json(error)
-    }
+  let result = await User.findOne(searchOptions)
+  if (!result) {
+    return res.status(404).json({ 'error': 404, 'message': 'The requested user was not found' })
+  }
+  if (result.errors) {
+    console.error(result.errors)
+    return res.status(500).json({ 'error': 500, 'message': result.errors })
+  }
 
-    if (!result) {
-      return res.status(404).json({ 'error': 404, 'not found': 'The requested user was not found' })
-    }
-
-    if (req.method === 'DELETE') {
-      result.deleted = true
-      result.save(error => {
-        if (error) return res.status(500).json(error)
-
-        // saved!
-        return res.json(result)
-      })
-    } else {
+  if (req.method === 'DELETE') {
+    result.deleted = true
+    result.save((error) => {
+      if (error) return res.status(500).json(error.message)
       return res.json(result)
-    }
-  })
+    })
+  } else {
+    return res.json(result)
+  }
 }
 
-function GetDeleteCollection(req, res, next) {
+async function GetDeleteCollection (req, res, next) {
   let { username, collection } = req.params
   let searchOptions = { username: username, 'collections.name': collection }
   if (req.method === 'GET') Object.assign(searchOptions, { deleted: { $ne: true } })
-  User.findOne(searchOptions, (error, result) => {
-    if (error) {
-      console.error(error)
-      return res.status(500).json(error)
-    }
+  let result = await User.findOne(searchOptions)
+  if (!result) {
+    return res.status(404).json({ 'error': 404, 'message': 'The requested collection was not found or the username was not found' })
+  }
+  if (result.errors) {
+    console.error(result.errors)
+    return res.status(500).json({ 'error': 500, 'message': result.errors })
+  }
 
-    if (!result) {
-      return res.status(404).json({ 'error': 404, 'not found': 'The requested collection was not found or the username was not found' })
-    }
+  let docs = result.collections.find(n => n.name === collection)
+  if (docs.deleted) return res.status(404).json({ 'error': 404, 'message': 'The requested collection was deleted' })
 
-    let docs = result.collections.find(n => n.name === collection)
-    if (docs.deleted) return res.status(404).json({ 'error': 404, 'not found': 'The requested collection was deleted' })
-
-    if(req.method === 'DELETE') {
-      docs.deleted = true
-      result.save(error => {
-        if (error) return res.status(500).json(error)
-
-        return res.json(docs)
-      })
-    } else {
-      return res.json(docs.documents)
-    }
-  })
+  if (req.method === 'DELETE') {
+    docs.deleted = true
+    result.markModified('collections')
+    result.save((error) => {
+      if (error) return res.status(500).json({ 'error': 500, 'message': error.message })
+      return res.json(docs)
+    })
+  } else {
+    return res.json(docs.documents)
+  }
 }
 
-/* GET users listing. */
+async function GetDeleteItem (req, res, next) {
+  let { username, collection, id } = req.params
+  let searchOptions = { username: username, 'collections.name': collection, 'collections.documents.id': id }
+  if (req.method === 'GET') Object.assign(searchOptions, { deleted: { $ne: true } })
+  let result = await User.findOne(searchOptions)
+  if (!result) {
+    return res.status(404).json({ 'error': 404, 'message': 'The requested collection was not found or the username was not found' })
+  }
+  if (result.errors) {
+    console.error(result.errors)
+    return res.status(500).json({ 'error': 500, 'message': result.errors })
+  }
+
+  let docs = result.collections.find(n => n.name === collection)
+  let doc = docs.collections.find(n => n._id === id)
+  if (doc.deleted) return res.status(404).json({ 'error': 404, 'message': 'The requested item was deleted' })
+
+  if (req.method === 'DELETE') {
+    doc.deleted = true
+    result.markModified('collections')
+    let save = await result.save()
+    if (save) return res.status(500).json({ 'error': 500, 'message': save })
+    return res.json(doc)
+  } else {
+    return res.json(doc)
+  }
+}
+
 router.get('/:username', GetDeleteUser)
-
 router.post('/:username', AddEditUser)
-
 router.put('/:username', AddEditUser)
-
 router.delete('/:username', GetDeleteUser)
-
 router.get('/:username/:collection', GetDeleteCollection)
-
 router.delete('/:username/:collection', GetDeleteCollection)
-
 router.post('/:username/:collection', AddEditCollection)
-
 router.put('/:username/:collection', AddEditCollection)
+router.get('/:username/:collection/:id', GetDeleteItem)
 
 module.exports = router
