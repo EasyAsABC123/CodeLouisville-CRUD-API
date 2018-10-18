@@ -55,7 +55,8 @@ async function AddEditUser (req, res, next) {
   let options = { runValidators: true, context: 'query', strict: false, upsert: true, setDefaultsOnInsert: true }
   if (req.method === 'POST') {
     options = Object.assign(options, { new: true })
-    User.create(userData, (err, user) => {
+    let user = new User(userData);
+    user.save(options, (err, user) => {
       if (err) return res.status(500).json({ 'error': 500, 'message': err })
 
       return res.json(user)
