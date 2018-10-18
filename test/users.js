@@ -12,9 +12,23 @@ let should = chai.should()
 
 let added = false
 
+function SaveUser (userData) {
+  let user = new Users(userData)
+  user.save((err, user) => {
+    if (err) return false
+
+    return true
+  })
+}
+
 let invalidUser = {
   'name': 'Test User',
   'collections': []
+}
+
+let exampleUser2 = {
+  'name': 'my user',
+  'username': 'fakeuser2'
 }
 
 let exampleUser = {
@@ -168,6 +182,23 @@ describe('Users', () => {
           console.log(res.body)
           res.should.have.status(200)
           res.body.should.be.a('object')
+
+          done()
+        })
+    })
+
+    it('it should fail to PUT a user', (done) => {
+      SaveUser(exampleUser2)
+      exampleUser2.username = 'testuser2'
+      chai.request(server)
+        .put('/users/fakeuser2')
+        .send(exampleUser2)
+        .end((err, res) => {
+          console.log(res.body)
+          res.should.have.status(409)
+          res.body.should.be.a('object')
+          res.body.error.should.be.equal(409)
+          res.body.message.should.be.equal('username already in use')
 
           done()
         })
