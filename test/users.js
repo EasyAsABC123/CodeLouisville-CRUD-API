@@ -26,6 +26,16 @@ let invalidUser = {
   'collections': []
 }
 
+let deleteUser = {
+  'name': 'delete user',
+  'username': 'deleteuser'
+}
+
+let exampleUser3 = {
+  'name': 'test user 3',
+  'username': 'exampleUser3'
+}
+
 let exampleUser2 = {
   'name': 'my user',
   'username': 'fakeuser2'
@@ -139,7 +149,6 @@ describe('Users', () => {
       chai.request(server)
         .get('/users/testuser2')
         .end((err, res) => {
-          console.log(added)
           res.should.have.status(200)
           res.body.should.be.a('object')
           res.body.name.should.be.equal('Test User 2')
@@ -179,7 +188,20 @@ describe('Users', () => {
         .put('/users/testuser2')
         .send(exampleUser)
         .end((err, res) => {
-          console.log(res.body)
+          res.should.have.status(200)
+          res.body.should.be.a('object')
+
+          done()
+        })
+    })
+
+    it('it should PUT a user, edit name', (done) => {
+      SaveUser(exampleUser3)
+      exampleUser3.name = 'example user 3'
+      chai.request(server)
+        .put('/users/exampleuser3')
+        .send(exampleUser3)
+        .end((err, res) => {
           res.should.have.status(200)
           res.body.should.be.a('object')
 
@@ -194,11 +216,24 @@ describe('Users', () => {
         .put('/users/fakeuser2')
         .send(exampleUser2)
         .end((err, res) => {
-          console.log(res.body)
           res.should.have.status(409)
           res.body.should.be.a('object')
           res.body.error.should.be.equal(409)
           res.body.message.should.be.equal('username already in use')
+
+          done()
+        })
+    })
+  })
+
+  describe('/DELETE user', () => {
+    it('it should DELETE a user', (done) => {
+      SaveUser(deleteUser)
+      chai.request(server)
+        .delete('/users/deleteuser')
+        .end((err, res) => {
+          res.should.have.status(200)
+          res.body.should.be.a('object')
 
           done()
         })

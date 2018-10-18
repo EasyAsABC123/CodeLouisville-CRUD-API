@@ -46,6 +46,15 @@ async function SaveUser (userData, res, options = {}) {
   })
 }
 
+async function UpdateUser (userData, res, options = {}) {
+  let user = new User(userData)
+  user.update(options, (err, user) => {
+    if (err) return res.status(500).json({ 'error': 500, 'message': err })
+
+    return res.json(user)
+  })
+}
+
 async function AddEditUser (req, res, next) {
   let user = req.params.username
 
@@ -64,17 +73,16 @@ async function AddEditUser (req, res, next) {
   if (req.method === 'POST') {
     return SaveUser(userData, res)
   } else {
-    if (user !== userData.username) {
+    if (user.toLowerCase() !== userData.username.toLowerCase()) {
       let result = await User.findOne({ username: userData.username })
-      console.log(result)
       if (!result) {
-        return SaveUser(userData, res)
+        return UpdateUser(userData, res)
       }
 
       return res.status(409).json({ 'error': 409, 'message': 'username already in use' })
     }
 
-    return SaveUser(userData, res)
+    return UpdateUser(userData, res)
   }
 }
 
@@ -88,7 +96,6 @@ async function GetDeleteUser (req, res, next) {
     return res.status(404).json({ 'error': 404, 'message': 'The requested user was not found' })
   }
   if (result.errors) {
-    console.error(result.errors)
     return res.status(500).json({ 'error': 500, 'message': result.errors })
   }
 
