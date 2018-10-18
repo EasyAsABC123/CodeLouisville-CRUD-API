@@ -11,7 +11,10 @@ let config = require('./config')
 mongoose.connect(`mongodb://${config.db.username}:${config.db.password}@${config.db.host}/${config.db.dbName}`, { useNewUrlParser: true })
 
 let app = express()
-app.use(secure)
+
+if (process.env.NODE_ENV !== 'dev' && process.env.NODE_ENV !== 'test') {
+  app.use(secure)
+}
 
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
@@ -55,3 +58,5 @@ app.use((err, req, res, next) => {
 app.listen(config.port, () => {
   console.log(`${config.appName} is listening on port ${config.port}`)
 })
+
+module.exports = app

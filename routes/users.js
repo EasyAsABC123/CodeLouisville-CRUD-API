@@ -23,9 +23,9 @@ async function AddEditCollection (req, res, next) {
     return res.status(500).json({ 'error': 500, 'message': result.errors })
   }
 
-  if (col) {
-    col.deleted = false
-    col.documents = Object.assign(col.documents, collectionObject.documents)
+  if (result) {
+    result.deleted = false
+    result.documents = Object.assign(result.documents, collectionObject.documents)
     result.markModified('collections')
   } else {
     result.collections.push(collectionObject)
@@ -33,16 +33,7 @@ async function AddEditCollection (req, res, next) {
   result.save((error) => {
     if (error) return res.status(500).json(error)
 
-  if (col) {
-    col.deleted = false
-    col.documents = Object.assign(col.documents, collectionObject.documents)
-  } else {
-    result.collections.push(collectionObject)
-  }
-  result.markModified('collections')
-  result.save((error, r) => {
-    if (error) return res.status(409).json(error.message)
-    return res.json(r.collections.find(n => n.name === collection))
+    return res.json(result.collections.find(n => n.name === collection))
   })
 }
 
@@ -64,28 +55,33 @@ async function AddEditUser (req, res, next) {
   let options = { runValidators: true, context: 'query', strict: false, upsert: true, setDefaultsOnInsert: true }
   if (req.method === 'POST') {
     options = Object.assign(options, { new: true })
-  }
+    User.create(userData, (err, user) => {
+      if (err) return res.status(500).json({ 'error': 500, 'message': err })
 
-  // Find the document
-  User.findOneAndUpdate({ username: user, deleted: { $ne: true } }, userData, options, (error, results) => {
-    if (error) {
-      if (error.name === 'ValidationError') {
-        return res.status(409).json({ 'error': 409, 'message': error.message })
-      } else {
-        return res.status(500).json({ 'error': 500, 'message': error })
+      return res.json(user)
+    })
+  } else {
+    // Find the document
+    User.findOneAndUpdate({ username: user, deleted: { $ne: true } }, userData, options, (error, results) => {
+      if (error) {
+        if (error.name === 'ValidationError') {
+          return res.status(409).json({ 'error': 409, 'message': error.message })
+        } else {
+          return res.status(500).json({ 'error': 500, 'message': error })
+        }
       }
-    }
-    if (!results) {
-      return res.status(404).json({ 'error': 404, 'message': 'The requested user was not found' })
-    }
+      if (!results) {
+        return res.status(404).json({ 'error': 404, 'message': 'The requested user was not found' })
+      }
 
-    if (results.errors) {
-      console.error(results.errors)
-      return res.status(500).json({ 'error': 500, 'message': results.errors })
-    }
+      if (results.errors) {
+        console.error(results.errors)
+        return res.status(500).json({ 'error': 500, 'message': results.errors })
+      }
 
-    return res.json(results)
-  })
+      return res.json(results)
+    })
+  }
 }
 
 async function GetDeleteUser (req, res, next) {
@@ -170,7 +166,7 @@ async function GetDeleteItem (req, res, next) {
 }
 
 router.get('/:username', GetDeleteUser)
-router.post('/:username', AddEditUser)
+router.post('/', AddEditUser)
 router.put('/:username', AddEditUser)
 router.delete('/:username', GetDeleteUser)
 router.get('/:username/:collection', GetDeleteCollection)
