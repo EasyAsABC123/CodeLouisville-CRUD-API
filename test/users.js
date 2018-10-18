@@ -13,7 +13,7 @@ let should = chai.should()
 let added = false
 
 let invalidUser = {
-  'name': 'Fake User',
+  'name': 'Test User',
   'collections': []
 }
 
@@ -68,30 +68,68 @@ let exampleUser = {
 
 // Polls `someCondition` every 1s
 let check = (done) => {
-  if (added) done()
-  else setTimeout(() => { check(done) }, 1000)
+  if (added === true) done()
+  else setTimeout(() => { check(done) }, 500)
 }
 
 chai.use(chaiHttp)
 // Our parent block
 describe('Users', () => {
-  beforeEach((done) => { // Before each test we empty the database
+  before((done) => { // Before each test we empty the database
     Users.remove({}, (err) => {
       done()
     })
   })
+
+  /*
+* Test the /POST route
+*/
+  describe('/POST user', () => {
+    it('it should POST a user', (done) => {
+      chai.request(server)
+        .post('/users')
+        .send(exampleUser)
+        .end((err, res) => {
+          res.should.have.status(200)
+          res.body.should.be.a('object')
+
+          added = true
+          done()
+        })
+    })
+
+    it('it should fail to POST a user', (done) => {
+      chai.request(server)
+        .post('/users')
+        .send(invalidUser)
+        .end((err, res) => {
+          res.should.have.status(400)
+          res.body.should.be.a('object')
+          res.body.error.should.be.equal(400)
+          res.body.message.should.be.equal('name and username required')
+
+          done()
+        })
+    })
+  })
+
   /*
     * Test the /GET route
     */
   describe('/GET user', () => {
+    before(function (done) {
+      check(done)
+    })
+
     it('it should GET a user', (done) => {
       chai.request(server)
-        .get('/users/fakeuser')
+        .get('/users/testuser2')
         .end((err, res) => {
+          console.log(added)
           res.should.have.status(200)
           res.body.should.be.a('object')
-          res.body.name.should.be.equal('Fake User')
-          res.body.username.should.be.equal('fakeuser')
+          res.body.name.should.be.equal('Test User 2')
+          res.body.username.should.be.equal('testuser2')
           res.body.deleted.should.be.equal(false)
           res.body.collections.should.be.a('array')
           res.body.collections.length.should.be.eql(2)
@@ -116,46 +154,12 @@ describe('Users', () => {
     })
   })
 
-  /*
-  * Test the /POST route
-  */
-  describe('/POST user', () => {
-    it('it should POST a user', (done) => {
-
-      chai.request(server)
-        .post('/users')
-        .send(exampleUser)
-        .end((err, res) => {
-          res.should.have.status(200)
-          res.body.should.be.a('object')
-
-          added = true
-          done()
-        })
-    })
-
-    it('it should fail to POSt a user', (done) => {
-      chai.request(server)
-        .post('/users')
-        .send(invalidUser)
-        .end((err, res) => {
-          res.should.have.status(400)
-          res.body.should.be.a('object')
-          res.body.error.should.be.equal(400)
-          res.body.message.should.be.equal('name and username required')
-
-          done()
-        })
-    })
-  })
-
   describe('/PUT user', () => {
     before(function (done) {
       check(done)
     })
 
     it('it should PUT a user', (done) => {
-      console.log(exampleUser)
       exampleUser.username = 'testuser3'
       chai.request(server)
         .put('/users/testuser2')

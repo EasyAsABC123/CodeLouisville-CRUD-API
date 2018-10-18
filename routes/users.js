@@ -37,6 +37,15 @@ async function AddEditCollection (req, res, next) {
   })
 }
 
+async function SaveUser (userData, res, options = {}) {
+  let user = new User(userData)
+  user.save(options, (err, user) => {
+    if (err) return res.status(500).json({ 'error': 500, 'message': err })
+
+    return res.json(user)
+  })
+}
+
 async function AddEditUser (req, res, next) {
   let user = req.params.username
 
@@ -52,36 +61,20 @@ async function AddEditUser (req, res, next) {
     return res.status(400).json({ 'error': 400, 'message': 'name and username required' })
   }
 
-  let options = { runValidators: true, context: 'query', strict: false, upsert: true, setDefaultsOnInsert: true }
   if (req.method === 'POST') {
-    options = Object.assign(options, { new: true })
-    let user = new User(userData);
-    user.save(options, (err, user) => {
-      if (err) return res.status(500).json({ 'error': 500, 'message': err })
-
-      return res.json(user)
-    })
+    return SaveUser(userData, res)
   } else {
-    // Find the document
-    User.findOneAndUpdate({ username: user, deleted: { $ne: true } }, userData, options, (error, results) => {
-      if (error) {
-        if (error.name === 'ValidationError') {
-          return res.status(409).json({ 'error': 409, 'message': error.message })
-        } else {
-          return res.status(500).json({ 'error': 500, 'message': error })
-        }
-      }
-      if (!results) {
-        return res.status(404).json({ 'error': 404, 'message': 'The requested user was not found' })
+    if (user !== userData.username) {
+      let result = await User.findOne({ username: userData.username })
+      console.log(result)
+      if (!result) {
+        return SaveUser(userData, res)
       }
 
-      if (results.errors) {
-        console.error(results.errors)
-        return res.status(500).json({ 'error': 500, 'message': results.errors })
-      }
+      return res.status(409).json({ 'error': 409, 'message': 'username already in use' })
+    }
 
-      return res.json(results)
-    })
+    return SaveUser(userData, res)
   }
 }
 

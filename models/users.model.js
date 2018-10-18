@@ -1,6 +1,5 @@
 // Load mongoose package
 const mongoose = require('mongoose')
-const uniqueValidator = require('mongoose-unique-validator');
 const Collection = require('./collection.model.js')
 
 const UserSchema = new mongoose.Schema({
@@ -11,7 +10,6 @@ const UserSchema = new mongoose.Schema({
   deleted: { type: Boolean, default: false }
 })
 
-UserSchema.plugin(uniqueValidator);
 const User = mongoose.model('User', UserSchema)
 
 User.countDocuments({}, function (err, count) {
