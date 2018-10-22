@@ -48,7 +48,12 @@ async function SaveUser (userData, res, options = {}) {
 
 async function UpdateUser (userData, res, options = {}) {
   let user = new User(userData)
-  user.update(options, (err, user) => {
+  
+  let updatedUser = {};
+  updatedUser = Object.assign(updatedUser, user._doc);
+  delete updatedUser._id;
+
+  User.update({ username: user.username }, updatedUser, (err, user) => {
     if (err) return res.status(500).json({ 'error': 500, 'message': err })
 
     return res.json(user)
