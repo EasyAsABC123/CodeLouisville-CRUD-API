@@ -151,7 +151,7 @@ async function GetDeleteCollection (req, res, next) {
 
 async function GetDeleteItem (req, res, next) {
   let { username, collection, id } = req.params
-  let searchOptions = { username: username, 'collections.name': collection, 'collections.documents.id': id }
+  let searchOptions = { username: username, 'collections.name': collection, 'collections.documents._id': id }
   if (req.method === 'GET') Object.assign(searchOptions, { deleted: { $ne: true } })
   let result = await User.findOne(searchOptions)
   if (!result) {
@@ -163,14 +163,14 @@ async function GetDeleteItem (req, res, next) {
   }
 
   let docs = result.collections.find(n => n.name === collection)
-  let doc = docs.collections.find(n => n._id === id)
+  let doc = docs.documents.find(n => n.id === id)
   if (doc.deleted) return res.status(404).json({ 'error': 404, 'message': 'The requested item was deleted' })
 
   if (req.method === 'DELETE') {
     doc.deleted = true
     result.markModified('collections')
     let save = await result.save()
-    if (save) return res.status(500).json({ 'error': 500, 'message': save })
+    if (!save) return res.status(500).json({ 'error': 500, 'message': save })
     return res.json(doc)
   } else {
     return res.json(doc)
@@ -186,5 +186,6 @@ router.delete('/:username/:collection', GetDeleteCollection)
 router.post('/:username/:collection', AddEditCollection)
 router.put('/:username/:collection', AddEditCollection)
 router.get('/:username/:collection/:id', GetDeleteItem)
+router.delete('/:username/:collection/:id', GetDeleteItem)
 
 module.exports = router
