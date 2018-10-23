@@ -1,13 +1,19 @@
 // Load mongoose package
 let mongoose = require('mongoose')
-const Item = require('./item.model.js')
+const { ItemSchema } = require('./item.model.js')
 
 let CollectionSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    documents: { type: [ Item ], default: [] },
-    deleted: { type: Boolean, default: false }
+    documents: { type: [ ItemSchema ], default: [] },
+    deleted: { type: Boolean, default: false },
+    created_at: { type: Date, default: Date.now }
   }
 )
 
-module.exports = CollectionSchema
+const Collection = mongoose.model('Collection', CollectionSchema)
+
+module.exports = {
+  Collection,
+  CollectionSchema
+}

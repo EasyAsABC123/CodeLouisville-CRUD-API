@@ -1,14 +1,17 @@
 let express = require('express')
 let router = express.Router()
 let User = require('../models/users.model.js')
+let { Collection } = require('../models/collection.model.js')
+let { Item } = require('../models/item.model.js')
 
 async function AddEditCollection (req, res, next) {
-  let { username, collection } = req.params
-  const collectionObject = {
+  const { username, collection } = req.params
+  const collectionObject = new Collection({
     name: req.body.name,
-    documents: req.body.documents,
+    documents: req.body.documents.map(d => new Item({ value: d })),
     created_at: req.body.created_at
-  }
+  })
+
   let searchOptions = { username: username, deleted: { $ne: true } }
   if (req.method === 'PUT') {
     searchOptions = Object.assign(searchOptions, { 'collections.name': collection })
@@ -23,13 +26,16 @@ async function AddEditCollection (req, res, next) {
     return res.status(500).json({ 'error': 500, 'message': result.errors })
   }
 
-  if (result) {
-    result.deleted = false
-    result.documents = Object.assign(result.documents, collectionObject.documents)
+  let col = result.collections.find(n => n.name === collection)
+
+  if (col) {
+    col.deleted = false
+    col.documents = Object.assign(col.documents, collectionObject.documents)
     result.markModified('collections')
   } else {
     result.collections.push(collectionObject)
   }
+
   result.save((error) => {
     if (error) return res.status(500).json(error)
 

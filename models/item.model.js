@@ -8,4 +8,9 @@ let ItemSchema = new mongoose.Schema(
   }
 )
 
-module.exports = ItemSchema
+const Item = mongoose.model('Item', ItemSchema)
+
+module.exports = {
+  Item,
+  ItemSchema
+}
