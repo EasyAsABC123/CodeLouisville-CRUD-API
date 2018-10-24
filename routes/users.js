@@ -6,11 +6,7 @@ let { Item } = require('../models/item.model.js')
 
 async function AddEditCollection (req, res, next) {
   const { username, collection } = req.params
-  const collectionObject = new Collection({
-    name: req.body.name,
-    documents: req.body.documents.map(d => new Item({ value: d })),
-    created_at: req.body.created_at
-  })
+  const collectionObject = mapCollection(req.body)
 
   let searchOptions = { username: username, deleted: { $ne: true } }
   if (req.method === 'PUT') {
@@ -72,7 +68,7 @@ async function AddEditUser (req, res, next) {
   let userData = {
     name: req.body.name,
     username: req.body.username,
-    collections: req.body.collections,
+    collections: mapCollections(req.body.collections),
     created_at: req.body.created_at,
     deleted: req.body.deleted
   }
@@ -176,6 +172,17 @@ async function GetDeleteItem (req, res, next) {
     return res.json(doc)
   }
 }
+
+/* Model instance utility functions */
+const mapCollections = (collections) => collections.map(c => mapCollection(c))
+const mapCollection = (collection) => {
+  let col = new Collection(collection)
+  col.documents = mapItems(collection.documents)
+  return col
+}
+const mapItems = (documents) => documents
+  .map(d => new Item({ value: d }))
+  .filter(d => !d.deleted)
 
 router.get('/:username', GetDeleteUser)
 router.post('/', AddEditUser)
