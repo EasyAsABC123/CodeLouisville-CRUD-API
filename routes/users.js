@@ -6,7 +6,7 @@ let { Item } = require('../models/item.model.js')
 
 async function AddEditCollection (req, res, next) {
   const { username, collection } = req.params
-  const collectionObject = mapCollection(req.body, res)
+  const collectionObject = mapCollection(req.body)
 
   let searchOptions = { username: username, deleted: { $ne: true } }
   if (req.method === 'PUT') {
@@ -68,7 +68,7 @@ async function AddEditUser (req, res, next) {
   let userData = {
     name: req.body.name,
     username: req.body.username,
-    collections: mapCollections(req.body.collections, res),
+    collections: mapCollections(req.body.collections),
     created_at: req.body.created_at,
     deleted: req.body.deleted
   }
@@ -174,20 +174,14 @@ async function GetDeleteItem (req, res, next) {
 }
 
 /* Model instance utility functions */
-const mapCollections = (collections, res) => collections.map(c => mapCollection(c, res))
-const mapCollection = (collection, res) => {
+const mapCollections = collections => collections.map(c => mapCollection(c))
+const mapCollection = collection => {
   let col = new Collection(collection)
-  col.documents = mapItems(collection.documents, res)
+  col.documents = mapItems(collection.documents)
   return col
 }
-const mapItems = (documents, res) => documents
-  .map(d => new Item(validateItem(d, res)))
-
-const validateItem = (item, res) => {
-  return item.value 
-    ? item
-    : res.status(400).json({ 'error': 400, 'message': 'Items must include a "value" field.' })
-}
+const mapItems = documents => documents
+  .map(d => new Item(d))
 
 router.get('/:username', GetDeleteUser)
 router.post('/', AddEditUser)
