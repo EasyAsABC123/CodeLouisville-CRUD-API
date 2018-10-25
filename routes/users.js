@@ -7,7 +7,7 @@ async function AddEditCollection (req, res, next) {
   const collectionObject = {
     name: req.body.name,
     documents: req.body.documents,
-    created_at: req.body.created_at
+    deleted: false
   }
   let searchOptions = { username: username, deleted: { $ne: true } }
   if (req.method === 'PUT') {
@@ -15,18 +15,11 @@ async function AddEditCollection (req, res, next) {
   }
 
   let result = await User.findOne(searchOptions)
-  if (!result) {
-    return res.status(404).json({ 'error': 404, 'message': 'The requested user was not found' })
-  }
-  if (!result.documents && req.method === 'PUT') {
-    return res.status(404).json({ 'error': 404, 'message': "The requested collection doesn't exist." })
-  }
-  if (result.errors) {
-    console.error(result.errors)
-    return res.status(500).json({ 'error': 500, 'message': result.errors })
-  }
+  if (!result) return res.status(404).json({ 'error': 404, 'message': 'The requested user was not found' })
+  if (req.method === 'PUT' && !result.documents) return res.status(404).json({ 'error': 404, 'message': "The requested collection doesn't exist." })
+  if (result.errors) return res.status(500).json({ 'error': 500, 'message': result.errors })
 
-  if (result) {
+  if (req.method === 'PUT') {
     result.deleted = false
     result.collections = Object.assign(result.collections, collectionObject)
     result.markModified('collections')
@@ -35,8 +28,7 @@ async function AddEditCollection (req, res, next) {
   }
   result.save((error) => {
     if (error) return res.status(500).json(error)
-
-    return res.json(result.collections.find(n => n.name === collection))
+    return res.json(result.collections.find(n => n.name === collectionObject.name))
   })
 }
 
