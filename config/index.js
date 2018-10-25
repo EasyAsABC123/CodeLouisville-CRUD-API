@@ -1,7 +1,7 @@
-require('dotenv').config()
+var path = require('path')
+require('dotenv-flow').config({ cwd: path.resolve(__dirname) })
 
 module.exports = {
-  appName: 'Our Glorious Node Project',
   port: process.env.PORT || 3030,
   db: {
     username: process.env.DB_USERNAME,

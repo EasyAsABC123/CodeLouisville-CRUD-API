@@ -3,11 +3,11 @@ const mongoose = require('mongoose')
 const Collection = require('./collection.model.js')
 
 const UserSchema = new mongoose.Schema({
-  name: { type: String },
-  username: String,
+  name: { type: String, required: true },
+  username: { type: String, unique: true, required: true },
   collections: { type: [Collection], default: [] },
   created_at: { type: Date, default: Date.now },
-  deleted: { type: Boolean }
+  deleted: { type: Boolean, default: false }
 })
 
 const User = mongoose.model('User', UserSchema)

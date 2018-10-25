@@ -2,6 +2,7 @@
 .idea
 bin
 node_modules
-.env
+config/.env.*
+config/.env
 package-lock.json
 .DS_Store
